@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>IGCSE Econ Master Pro</title>
+    <title>Econ Master Pro: Dashboard</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     
@@ -14,7 +13,7 @@
             --primary: #00d2ff;
             --secondary: #9d50bb;
             --bg: #0f172a;
-            --card: rgba(30, 41, 59, 0.7);
+            --card: rgba(30, 41, 59, 0.8);
             --text: #f8fafc;
         }
 
@@ -22,488 +21,374 @@
             font-family: 'Inter', sans-serif;
             background: radial-gradient(circle at top center, #1e293b 0%, #0f172a 100%);
             color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
+            display: flex;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .stats-bar {
-            position: fixed;
-            top: env(safe-area-inset-top, 20px);
+        /* --- SIDEBAR --- */
+        #sidebar {
+            width: 300px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255,255,255,0.1);
             display: flex;
-            gap: 15px;
-            z-index: 10;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #word-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .list-item {
+            padding: 12px 15px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+            color: #94a3b8;
+        }
+
+        .list-item:hover { background: rgba(255,255,255,0.08); color: white; }
+        .list-item.active { background: rgba(0, 210, 255, 0.2); color: var(--primary); border: 1px solid var(--primary); }
+        .list-item.mastered { border-left: 3px solid #22c55e; }
+
+        /* --- MAIN CONTENT --- */
+        #main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .stats-bar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
         }
 
         .stat-pill {
             background: var(--card);
-            padding: 8px 15px;
+            padding: 8px 16px;
             border-radius: 50px;
             border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            font-weight: bold;
             font-size: 0.9rem;
+            font-weight: 800;
         }
 
         .quiz-container {
             background: var(--card);
-            padding: 30px;
-            border-radius: 24px;
+            padding: 40px;
+            border-radius: 28px;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 90%;
-            max-width: 500px;
+            width: 100%;
+            max-width: 550px;
             text-align: center;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .level-badge {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            color: var(--primary);
-            margin-bottom: 5px;
-            display: block;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
         }
 
         .word-display {
-            font-size: clamp(28px, 8vw, 42px);
+            font-size: clamp(32px, 5vw, 48px);
             font-weight: 900;
-            margin: 15px 0;
-            background: linear-gradient(to right, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+            line-height: 1.1;
         }
 
         textarea {
             width: 100%;
-            height: 100px;
-            background: rgba(0,0,0,0.3);
+            height: 120px;
+            background: rgba(0,0,0,0.4);
             border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 15px;
+            border-radius: 18px;
             color: white;
-            padding: 15px;
+            padding: 18px;
             font-size: 16px;
             resize: none;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             box-sizing: border-box;
+            outline: none;
+            transition: border 0.3s;
         }
+        textarea:focus { border-color: var(--primary); }
 
         button {
-            padding: 16px;
-            border-radius: 14px;
+            padding: 18px;
+            border-radius: 15px;
             border: none;
-            font-weight: 800;
+            font-weight: 900;
             cursor: pointer;
             width: 100%;
             font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             transition: 0.2s;
         }
 
-        .submit-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            box-shadow: 0 8px 20px rgba(0, 210, 255, 0.2);
-        }
+        .submit-btn { background: var(--primary); color: #0f172a; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,210,255,0.4); }
 
         #grading-zone { display: none; text-align: left; }
+        .comparison-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+        .def-label { color: var(--primary); font-size: 0.75rem; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; }
+        .def-text { display: block; margin-top: 8px; font-size: 1.05rem; line-height: 1.5; color: #e2e8f0; }
 
-        .comparison-box {
-            background: rgba(255,255,255,0.05);
+        #feedback-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
             padding: 12px;
             border-radius: 12px;
-            margin-bottom: 10px;
-            border-left: 3px solid var(--secondary);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
         }
 
-        .def-label { color: var(--primary); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
-        .def-text { display: block; margin: 4px 0 12px 0; font-size: 1rem; line-height: 1.4; opacity: 0.9; }
-
-        .score-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .score-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .correct-btn { background: #22c55e; color: white; }
         .wrong-btn { background: #ef4444; color: white; }
 
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            margin-top: 25px;
-            overflow: hidden;
+        /* Mobile Styling */
+        @media (max-width: 850px) {
+            #sidebar { position: absolute; left: -300px; height: 100%; }
+            #sidebar.open { transform: translateX(300px); }
+            .menu-toggle { display: block; position: absolute; top: 20px; left: 20px; z-index: 110; cursor: pointer; background: var(--card); padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); font-weight: bold; font-size: 0.8rem; }
         }
-
-        #progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.5s; }
+        .menu-toggle { display: none; }
     </style>
 </head>
 <body>
 
-<div class="stats-bar">
-    <div class="stat-pill">🔥 <span id="streak">0</span></div>
-    <div class="stat-pill">⭐ <span id="xp">0</span> XP</div>
+<div class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ LIBRARY</div>
+
+<div id="sidebar">
+    <div class="sidebar-header">ECONOMICS DICTIONARY</div>
+    <div id="word-list"></div>
 </div>
 
-<div class="quiz-container" id="main-card">
-    <span class="level-badge" id="rank">Novice Economist</span>
-    <div id="progress-text" style="font-size: 0.75rem; color: #64748b; margin-bottom: 10px;">0 / 0 Mastery</div>
-    
-    <div class="word-display" id="word-display">Ready?</div>
-    
-    <div id="quiz-ui">
-        <textarea id="user-input" placeholder="Recall the definition..."></textarea>
-        <button class="submit-btn" onclick="revealDef()">Check Logic</button>
+<div id="main-content">
+    <div class="stats-bar">
+        <div class="stat-pill">🔥 <span id="streak">0</span></div>
+        <div class="stat-pill">⭐ <span id="xp">0</span> XP</div>
     </div>
 
-    <div id="grading-zone">
-        <div class="comparison-box">
-            <span class="def-label">Your Draft:</span>
-            <span class="def-text" id="user-answer-display" style="font-size: 0.9rem;"></span>
-        </div>
-
-        <span class="def-label">Official Logic:</span>
-        <span class="def-text" id="definition-text"></span>
+    <div class="quiz-container" id="main-card">
+        <div id="rank-display" style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px;">NOVICE ECONOMIST</div>
+        <div class="word-display" id="word-display">Loading...</div>
         
-        <div class="score-btns">
-            <button class="correct-btn" onclick="handleScore(true)">Nailed It!</button>
-            <button class="wrong-btn" onclick="handleScore(false)">Missed It</button>
+        <div id="quiz-ui">
+            <textarea id="user-input" placeholder="Explain this concept in your own words..."></textarea>
+            <button class="submit-btn" onclick="revealDef()">Check Logic</button>
+        </div>
+
+        <div id="grading-zone">
+            <div id="feedback-box"></div>
+
+            <div class="comparison-box">
+                <span class="def-label">Your Version:</span>
+                <span class="def-text" id="user-answer-display"></span>
+            </div>
+            <div class="comparison-box">
+                <span class="def-label">Official Definition:</span>
+                <span class="def-text" id="definition-text"></span>
+            </div>
+            <div class="score-btns">
+                <button class="correct-btn" onclick="handleScore(true)">Nailed It!</button>
+                <button class="wrong-btn" onclick="handleScore(false)">Missed It</button>
+            </div>
         </div>
     </div>
-
-    <div class="progress-bar"><div id="progress-fill"></div></div>
 </div>
 
 <script>
-    // contains the full vocabData list
     const vocabData = [
-        {word: "Wants", def: "desires for goods and services"},
-        {word: "Resources", def: "factors used to produce goods and services"},
-        {word: "The economic problem", def: "unlimited wants exceeding finite resources"},
-        {word: "Scarcity", def: "a situation where there is not enough to satisfy everyone's wants"},
-        {word: "Economic good", def: "a product which requires resources to produce it and therefore has an opportunity cost"},
-        {word: "Free good", def: "a product which does not require any resources to make it and so does not have an opportunity cost"},
-        {word: "Capital/Capital goods", def: "human-made goods used in production"},
-        {word: "Consumer goods", def: "goods and services purchased by households for their own satisfaction"},
-        {word: "Entrepreneur", def: "a person who bears the risks and makes the key decisions in a business"},
-        {word: "Occupationally mobile", def: "capable of changing use"},
-        {word: "Geographically mobile", def: "capable of moving from one location to another location"},
-        {word: "Mobility of labour", def: "the ability of labour to change where it works or in which occupation"},
-        {word: "Mobility of capital", def: "the ability to change where capital is used or in which occupation"},
-        {word: "Mobility of enterprise", def: "the ability to change where enterprise is used or in which occupation"},
-        {word: "Labour force", def: "people in work and those actively seeking work"},
-        {word: "Productivity", def: "the output per factor of production in an hour"},
-        {word: "Output", def: "goods and services produced by the factors of production"},
-        {word: "Investment", def: "spending on capital goods"},
-        {word: "Gross investment", def: "total spending on capital goods"},
-        {word: "Depreciation (capital consumption)", def: "the value of capital goods that have worn out or become obsolete"},
-        {word: "Net investment", def: "gross investment minus depreciation"},
-        {word: "Negative net investment", def: "a reduction in the number of capital goods caused by some obsolete and worn-out capital goods not being replaced"},
-        {word: "Opportunity cost", def: "the next best alternative forgone while making an economic decision"},
-        {word: "Production possibility curve", def: "a curve that shows the maximum output of two types of products and combination of those products that can be produced with existing resources and technology"},
-        {word: "Microeconomics", def: "the study of the behaviour and decisions of households and firms and the performance of individual markets."},
-        {word: "Macroeconomics", def: "the study of the whole economy"},
-        {word: "Market", def: "an arrangement which brings buyers into contact with sellers"},
-        {word: "Economic agents", def: "those people who undertake economic activities and make economic decisions"},
-        {word: "Economic systems", def: "the institutions, organisations and mechanisms that influence economic behaviour and determine how resources are allocated"},
-        {word: "Planned economic system", def: "an economic system where the government makes the crucial decisions, land and capital are state-owned and directives allocate resources"},
-        {word: "Mixed economic system", def: "an economy in which both the private and public sectors play an important role"},
-        {word: "Market economic system", def: "an economic system where consumers determine what is produced, resources are allocated by the price mechanism and land and capital are privately owned"},
-        {word: "Price mechanism", def: "the way the decisions made by households and firms interact to decide the allocation of resources"},
-        {word: "Capital-intensive", def: "the use of a high proportion of capital relative to labour"},
-        {word: "Labour-intensive", def: "the use of a high proportion of labour relative to capital"},
-        {word: "Market equilibrium", def: "a situation where demand and supply are equal at the current price"},
-        {word: "Market disequilibrium", def: "a situation where demand and supply are not equal at the current price"},
-        {word: "Demand", def: "the willingness and ability to buy a product"},
-        {word: "Market demand", def: "total demand for a product"},
-        {word: "Aggregation", def: "the addition of individual components to arrive at a total amount"},
-        {word: "Extension in demand", def: "a rise in the quantity demanded caused by a fall in the product's price."},
-        {word: "Contraction in demand", def: "a fall in the quantity demanded caused by a rise in the product's price."},
-        {word: "Changes in demand", def: "shifts in the demand curve"},
-        {word: "increase in demand", def: "a rise in demand at any given price, causing the demand curve to shift to the right"},
-        {word: "Decrease in demand", def: "a fall in demand at any given price, causing the demand curve to shift to the left"},
-        {word: "Normal goods", def: "a product whose demand increases when income increases and decreases when income falls"},
-        {word: "Inferior goods", def: "a product whose demand decreases when income increases and increases when income falls"},
-        {word: "Substitute", def: "a product that can be used in place of another"},
-        {word: "Complement", def: "a product that is used together with another product"},
-        {word: "Ageing population", def: "an increase in the average age of the population"},
-        {word: "Birth rate", def: "the number of live births per thousand of the population in a year"},
-        {word: "Supply", def: "the willingness and ability to sell a product"},
-        {word: "Market supply", def: "total supply of a product"},
-        {word: "Extension in supply", def: "a rise in the quantity supplied caused by a rise in the product's price."},
-        {word: "Contraction in supply", def: "a fall in the quantity supplied caused by a fall in the product's price."},
-        {word: "Changes in supply", def: "changes in supply conditions causing shifts in the supply curve"},
-        {word: "Increase in supply", def: "a rise in supply at any given price, causing the supply curve to shift to the right"},
-        {word: "Decrease in supply", def: "a fall in supply at any given price, causing the supply curve to shift to the left"},
-        {word: "Unit cost", def: "the average cost of production. It is found by dividing the total cost by the output"},
-        {word: "Improvements in technology", def: "advances in the quality of capital goods and methods of production"},
-        {word: "Direct taxes", def: "taxes on the income and wealth of individuals and firms"},
-        {word: "Indirect taxes", def: "taxes on goods and services"},
-        {word: "Tax", def: "a payment to the government"},
-        {word: "Subsidy", def: "a payment by the government to encourage the production or consumption of a product"},
-        {word: "Equilibrium price", def: "the price where demand and supply are equal"},
-        {word: "Disequilibrium", def: "a situation where demand and supply are not equal"},
-        {word: "Excess supply", def: "the amount by which supply is greater than demand"},
-        {word: "Excess demand", def: "the amount by which demand is greater than supply"},
-        {word: "Price elasticity of demand (PED)", def: "a measure of the responsiveness of the quantity demanded to a change in price"},
-        {word: "Elastic demand", def: "when the quantity demanded changes by a greater percentage than the change in price"},
-        {word: "Inelastic demand", def: "when the quantity demanded changes by a smaller percentage than the change in price"},
-        {word: "Perfectly elastic demand", def: "when a change in price causes a complete change in the quantity demanded"},
-        {word: "Perfectly inelastic demand", def: "when a change in price has no effect on the quantity demanded"},
-        {word: "Unit elasticity of demand", def: "when a change in price causes an equal change in the quantity demanded, leaving total revenue unchanged."},
-        {word: "Price elasticity of supply (PES)", def: "a measure of the responsiveness of the quantity supplied to a change in price"},
-        {word: "Elastic supply", def: "when the quantity supplied changes by a greater percentage than the change in price"},
-        {word: "Inelastic supply", def: "when the quantity supplied changes by a smaller percentage than the change in price"},
-        {word: "Perfectly elastic supply", def: "when a change in price causes a complete change in the quantity supplied"},
-        {word: "Perfectly inelastic supply", def: "when a change in price has no effect on the quantity supplied"},
-        {word: "Unit elasticity of supply", def: "when a change in price causes an equal change in the quantity supplied"},
-        {word: "Public sector", def: "the part of the economy controlled by the government"},
-        {word: "State-owned enterprises (SOEs)", def: "organisations owned by the government which sell products"},
-        {word: "Privatisation", def: "the sale of public assets to the private sector"},
-        {word: "Market failure", def: "market forces resulting in an inefficient allocation of resources"},
-        {word: "Free rider", def: "someone who consumes a good or service without paying for it"},
-        {word: "Allocative efficiency", def: "when resources are allocated to produce the right products in the right quantities"},
-        {word: "Productively efficient", def: "when products are produced at the lowest possible cost and make full use of resources"},
-        {word: "Dynamic efficiency", def: "efficiency occurring over time as a result of investment and innovation"},
-        {word: "Third parties", def: "those not directly involved in producing or consuming a product"},
-        {word: "Social benefits", def: "the total benefits to a society of an economic activity"},
-        {word: "Social costs", def: "the total costs to a society of an economic activity"},
-        {word: "Private benefits", def: "benefits received by those directly consuming or producing a product"},
-        {word: "Private costs", def: "costs made by those directly consuming or producing a product"},
-        {word: "External benefits", def: "benefits enjoyed by those who are not involved in the consumption and production activities of others directly"},
-        {word: "External costs", def: "costs imposed on those who are not involved in the consumption and production activities of others directly"},
-        {word: "Socially optimum output", def: "the level of output where social cost equals social benefit, and society's welfare is maximised"},
-        {word: "Merit goods", def: "products the government considers consumers do not fully appreciate how beneficial they are and will be under-consumed if left to market forces. Such goods generate positive externalities."},
-        {word: "Demerit goods", def: "products the government considers consumers do not fully appreciate how harmful they are and will be over-consumed if left to market forces. Such goods generate negative externalities."},
-        {word: "Public good", def: "a non-rival and non-excludable product hence needs to be financed by taxation."},
-        {word: "Private goods", def: "a product which is both rival and excludable"},
-        {word: "Monopoly", def: "a single seller"},
-        {word: "Price fixing", def: "when two or more firms agree to sell a product at the same price"},
-        {word: "Rationing", def: "a limit on the amount that can be consumed"},
-        {word: "Lottery", def: "the drawing of tickets to decide who will get the products"},
-        {word: "Nationalisation", def: "moving the ownership and control of an industry from the private sector to the government"},
-        {word: "Public corporation", def: "a business organisation owned by the government which is designed to act in the public interest"},
-        {word: "Money", def: "an item which is generally acceptable as a means of payment"},
-        {word: "Commercial banks", def: "banks which aim to make a profit by providing a range of banking services to households and firms"},
-        {word: "Central bank", def: "a government-owned bank which provides banking services to the government and commercial banks and operates monetary policy"},
-        {word: "Liquidity", def: "being able to turn an asset into cash quickly without a loss"},
-        {word: "Disposable income", def: "income left after income tax has been deducted and state benefits received"},
-        {word: "Wealth", def: "a stock of assets, including money held in bank accounts, shares in companies, government bonds, cars and property"},
-        {word: "Rate of interest", def: "a charge for borrowing money and a payment for lending money"},
-        {word: "Average propensity to consume (APC)", def: "the proportion of household disposable income which is spent"},
-        {word: "Consumption", def: "expenditure by households on consumer goods and income"},
-        {word: "Savings ratio", def: "the proportion of household disposable income that is saved"},
-        {word: "Average propensity to save (APS)", def: "the proportion of household disposable income that is saved"},
-        {word: "Mortgage", def: "a loan to help buy a house"},
-        {word: "Earnings", def: "the total pay received by a worker"},
-        {word: "Wage rate", def: "a payment which an employer contracts to pay a worker. It is the basic wage a worker receives per unit of time or unit of output."},
-        {word: "National minimum wage (NMW)", def: "a minimum rate of wage for an hour's work, fixed by the government for the whole economy."},
-        {word: "Elasticity of demand for labour", def: "a measure of the responsiveness of demand for labour to a change in the wage rate"},
-        {word: "Elasticity of supply of labour", def: "a measure of the responsiveness of the supply of labour to a change in the wage rate"},
-        {word: "Specialisation", def: "the concentration on particular products or tasks"},
-        {word: "Division of labour", def: "workers specialising in particular tasks"},
-        {word: "Trade union", def: "an association which represents the interests of a group of workers"},
-        {word: "Collective bargaining", def: "representatives of workers negotiating with employers' associations"},
-        {word: "Industrial action", def: "when workers disrupt production to put pressure on employers to agree to their demands"},
-        {word: "Industry", def: "a group of firms producing the same product"},
-        {word: "Primary sector", def: "covers industries which extract natural resources"},
-        {word: "Secondary sector", def: "covers manufacturing and construction industries"},
-        {word: "Tertiary sector", def: "covers industries which provide services"},
-        {word: "Quaternary sector", def: "covers knowledge-based service industries"},
-        {word: "internal growth", def: "an increase in the size of a firm resulting from it enlarging existing plants or opening new ones"},
-        {word: "External growth", def: "an increase in the size of a firm resulting from it merging or taking over another firm"},
-        {word: "Horizontal merger", def: "the merger of firms producing the same product and at the same stage of production"},
-        {word: "Vertical merger", def: "the merger of firms producing the same product but at a different stage of production"},
-        {word: "Vertical merger backwards", def: "a merger with a firm at an earlier stage of the supply chain"},
-        {word: "Vertical merger forwards", def: "a merger with a firm at a later stage of the supply chain"},
-        {word: "Conglomerate merger", def: "a merger between firms producing different products"},
-        {word: "Internal economies of scale", def: "lower long-run average costs resulting from a firm growing in size"},
-        {word: "External economies of scale", def: "lower long-run average costs resulting from an industry growing in size"},
-        {word: "Internal diseconomies of scale", def: "higher long-run average costs arising from a firm growing too large"},
-        {word: "External diseconomies of scale", def: "higher long-run average costs arising from an industry growing too large"},
-        {word: "Total cost", def: "the total amount that has to be spent on the factors of production used to produce a product"},
-        {word: "Average total cost", def: "total cost divided by output"},
-        {word: "Fixed costs", def: "costs which do not change with output in the short run"},
-        {word: "Average fixed cost", def: "total fixed cost divided by output"},
-        {word: "Variable cost", def: "costs that change with output"},
-        {word: "Average variable cost", def: "total variable cost divided by output"},
-        {word: "Price", def: "the amount of money that has to be given to obtain a product"},
-        {word: "Total revenue", def: "the total amount of money received from selling a product"},
-        {word: "Average revenue", def: "the total revenue divided by the quantity sold"},
-        {word: "Profit satisficing", def: "sacrificing some profit to achieve some goals"},
-        {word: "Profit maximisation", def: "making as much profit as possible"},
-        {word: "Market structure", def: "the conditions which exist in a market, including the number of firms"},
-        {word: "Competitive market", def: "a market with a number of firms that compete with each other"},
-        {word: "Barrier to entry", def: "anything that makes it difficult for a firm to start producing the product"},
-        {word: "Barrier to exit", def: "anything that makes it difficult for a firm to stop producing the product"},
-        {word: "Scale of production", def: "the size of production units and the methods of production used"},
-        {word: "Local government", def: "a government organisation with the authority to administer a range of policies within an area of the country"},
-        {word: "Natural monopoly", def: "an industry where a single firm can produce at a lower average cost than two or more firms because of the existence of significant economies of scale"},
-        {word: "Strategic industries", def: "industries are important for the economic development and safety of the country"},
-        {word: "National champions", def: "industries that are, or have the potential to be, world leaders"},
-        {word: "Trade blocs", def: "a regional group of countries that remove trade restrictions between them"},
-        {word: "Free international trade", def: "the exchange of goods and services between countries without restriction"},
-        {word: "Economic growth", def: "an increase in the output of an economy in the long run, an increase in the economy's productive potential"},
-        {word: "Actual economic growth", def: "an increase in the output of an economy"},
-        {word: "Potential economic growth", def: "an increase in an economy's productive capacity"},
-        {word: "Aggregate demand", def: "the total demand for a country's product at a given price level. It consists of consumer expenditure, investment, government spending and net exports (exports-imports)"},
-        {word: "Aggregate supply", def: "the total amount of goods and services that domestic firms are willing to supply at a given price level"},
-        {word: "Full employment", def: "the lowest level of unemployment possible"},
-        {word: "Economically active", def: "being a member of the labour force"},
-        {word: "Unemployment rate", def: "the percentage of the labour force who are willing and able to work but are without jobs"},
-        {word: "Price stability", def: "the price level in the economy not changing significantly over time"},
-        {word: "Inflation rate", def: "the percentage rise in the price level of goods and services over time"},
-        {word: "Balance of payments", def: "the record of a country's economic transactions with other countries"},
-        {word: "Budget", def: "the relationship between government revenue and government spending"},
-        {word: "Budget deficit", def: "government spending is higher than government revenue"},
-        {word: "Budget surplus", def: "government revenue is higher than government spending"},
-        {word: "National debt", def: "the total amount the goverment has borrowed over time"},
-        {word: "Multiplier effect", def: "the final impact on aggregate demand being greater than initial change"},
-        {word: "Progressive tax", def: "one which takes a larger percentage of the income or wealth of the rich"},
-        {word: "Proportional tax", def: "one which takes the same percentage of income or wealth of all taxpayers"},
-        {word: "Regressive tax", def: "one which takes a larger percentage of the income or wealth of the poor"},
-        {word: "Automatic stabilisers", def: "forms of government expenditure and taxations that reduce fluctuations in economic activity, without any change in government policy"},
-        {word: "Inflation", def: "the rise in the price level of goods and services over time"},
-        {word: "Informal economy", def: "that part of the economy that is not regulated, protected or taxed by the government"},
-        {word: "Flat taxes", def: "taxes with a single rate"},
-        {word: "Fiscal policy", def: "decisions on government spending and taxation designed to influence aggregate demand"},
-        {word: "Expansionary fiscal policy", def: "rises in government expenditure and/or cuts in taxation designed to increase aggregate demand"},
-        {word: "Contractionary fiscal policy", def: "cuts in government expenditure and/or rises in taxation designed to reduce aggregate demand"},
-        {word: "Monetary policy", def: "decisions on the money supply, the rate of interest and the exchange rate taken to influence aggregate demand"},
-        {word: "Foreign exchange rate", def: "the price of one currency in terms of anther currency or currencies"},
-        {word: "Expansionary monetary policy", def: "increases in the money supply and/or the reduction in the rate of interest designed to increase aggregate demand"},
-        {word: "Contractionary monetary policy", def: "cuts in the money supply or growth of money supply and/or rises in the rate of interest designed to reduce aggregate demand"},
-        {word: "Supply-side policy", def: "measures designed to increase aggregate supply"},
-        {word: "Deregulation", def: "the removal of rules and regulations"},
-        {word: "Gross domestic product (GDP)", def: "the total output of a country"},
-        {word: "Circular flow of income", def: "the movement of expenditure, income and output around the economy"},
-        {word: "Value added", def: "the difference between the sales revenue received and the cost of raw materials used."},
-        {word: "Transfer payments", def: "transfers of income from one group to another not in return for providing a good or service"},
-        {word: "Nominal GDP", def: "GDP at current market prices and so, not adjusted for inflation"},
-        {word: "Real GDP", def: "GDP at constant prices and so, adjusted for inflation"},
-        {word: "Subsistence agriculture", def: "the output agricultural goods for farmers' personal use"},
-        {word: "Recession", def: "a reduction in real GDP over a period of six months or more"},
-        {word: "Sustainable economic growth", def: "economic growth that does not endanger the country's ability to grow in the future"},
-        {word: "Employment", def: "being involved in a productive activity for which a payment is received"},
-        {word: "Unemployment", def: "being without a job while willing and able to work"},
-        {word: "Claimant count", def: "a measure of unemployment which counts as unemployed these in receipt of unemployment benefits"},
-        {word: "Labour force survey (ILO) Measure", def: "a measure of unemployment which counts as unemployed people who identify as such in a survey"},
-        {word: "Frictional unemployment", def: "temporary unemployment arising from workers being in between jobs"},
-        {word: "Structural unemployment", def: "unemployment caused by long-term changes in the pattern of demand and methods of production"},
-        {word: "Cyclical unemployment", def: "unemployment caused by a lack of aggregate demand"},
-        {word: "Search unemployment", def: "unemployment arising from workers who have lost their jobs, looking for a job they are willing to accept"},
-        {word: "Casual unemployment", def: "unemployment arising from workers regularly being between periods of employment"},
-        {word: "Seasonal unemployment", def: "unemployment caused by a fall in demand at particular times of the year"},
-        {word: "Regional unemployment", def: "unemployment caused by a decline in job opportunities in a particular area of the country"},
-        {word: "Technological unemployment", def: "unemployment caused by workers being replaced by capital equipment"},
-        {word: "Deflation", def: "a sustained fall in the prices of goods and services"},
-        {word: "Disinflation", def: "a fall in the rate of inflation"},
-        {word: "Cost-push inflation", def: "rises in the price level caused by higher costs of production"},
-        {word: "Demand-pull inflation", def: "rises in the price level caused by excess demand"},
-        {word: "Wage-price spiral", def: "wage rises leading to higher prices, in turn, lead to further wage claims and price rises"},
-        {word: "Monetary inflation", def: "rises in the price level caused by an excessive growth of the money supply"},
-        {word: "Hyperinflation", def: "a very rapid and large rise in the price level"},
-        {word: "Index-linking", def: "changing payments in line with changes in the inflation rate"},
-        {word: "Menu costs", def: "costs involved in having to change prices as a result of inflation"},
-        {word: "Shoe-leather costs", def: "costs involved in moving money around to gain higher interest rates"},
-        {word: "Purchasing power parity", def: "an exchange rate based on the ratio of the price of a basket of a products in different countries"},
-        {word: "Human development index (HDI)", def: "a measure of living standards which takes into account income, education and life expectancy"},
-        {word: "Absolute poverty", def: "a condition where people's income is too low to enable them to meet their basic needs"},
-        {word: "Relative poverty", def: "a condition where people are poor in comparison to others in the country. Their income is too low to enable them to enjoy the average standard of living in their country"},
-        {word: "Vicious circle of poverty", def: "a situation where people become trapped in poverty"},
-        {word: "Emigration", def: "the act of leaving the country to live in another country"},
-        {word: "Death rate", def: "the number of deaths in a year per 1000 population in a year"},
-        {word: "Infant mortality rate", def: "the number of deaths per 1000 live births in a year"},
-        {word: "Population pyramid", def: "a diagram showing the age and gender structure of a country's population"},
-        {word: "Optimum population", def: "the size of population which maximizes the country’s output per head"},
-        {word: "Economic development", def: "an improvement in economic welfare"},
-        {word: "Globalisation", def: "the process by which the world is becoming increasingly interconnected through trade and other links"},
-        {word: "Quota", def: "a limit placed on imports and exports"},
-        {word: "Embargo", def: "a ban placed on imports and exports"},
-        {word: "Exchange control", def: "a limit on the amount of foreign currency that can be obtained"},
-        {word: "Infant industries", def: "new industries with relatively low output and high cost"},
-        {word: "Declining industries", def: "old industries which are going out of business"},
-        {word: "Fixed exchange rate", def: "an exchange rate whose value is set at a particular value in terms of another currency or currencies"},
-        {word: "Devaluation", def: "a fall in the value of a fixed exchange rate"},
-        {word: "Revaluation", def: "a rise in the value of a fixed exchange rate"},
-        {word: "Floating exchange rate", def: "an exchange rate which can change frequently as it determined by market forces"},
-        {word: "Appreciation", def: "a rise in the value of a floating exchange rate"},
-        {word: "Trade in goods", def: "the value of exported goods and imported goods"},
-        {word: "Trade in goods deficit", def: "expenditure on imported goods exceeding revenue from exported goods"},
-        {word: "Trade in goods surplus", def: "revenue from exported goods exceeding expenditure on imported goods"},
-        {word: "Trade in services", def: "the value of exported services and imported services"},
-        {word: "Trade in services deficit", def: "expenditure on imported services exceeding revenue from exported services"},
-        {word: "Primary income", def: "income earned by people working in different countries and investment income which comes into and goes out of the country"},
-        {word: "Secondary income", def: "transfers between residents and non-residents of money, goods or services, not in return for anything else"},
-        {word: "Current account balance", def: "a record of the income received and the expenditure made by a country in its dealings with other countries"}
+        {word: "Wants", def: "Desires for goods and services", keys: ["desire", "good", "service"]},
+        {word: "Resources", def: "Factors used to produce goods and services", keys: ["factor", "produce", "production"]},
+        {word: "Economic problem", def: "Unlimited wants exceeding finite resources", keys: ["unlimited", "wants", "finite", "resources"]},
+        {word: "Scarcity", def: "A situation where there is not enough to satisfy everyone's wants", keys: ["not enough", "satisfy", "wants"]},
+        {word: "Economic good", def: "A product which requires resources to produce it and therefore has an opportunity cost", keys: ["require", "resources", "opportunity cost"]},
+        {word: "Free good", def: "A product which does not require any resources to make it and so does not have an opportunity cost", keys: ["no", "require", "resources", "cost"]},
+        {word: "Capital goods", def: "Human-made goods used in production", keys: ["human", "made", "production"]},
+        {word: "Consumer goods", def: "Goods and services purchased by households for their own satisfaction", keys: ["purchase", "household", "satisfaction"]},
+        {word: "Entrepreneur", def: "A person who bears the risks and makes the key decisions in a business", keys: ["risk", "decision", "business"]},
+        {word: "Opportunity cost", def: "The next best alternative forgone while making an economic decision", keys: ["next best", "alternative", "forgone"]},
+        {word: "Production possibility curve", def: "A curve that shows the maximum output of two types of products with existing resources", keys: ["maximum", "output", "two", "products"]},
+        {word: "Microeconomics", def: "The study of the behaviour and decisions of households and firms", keys: ["behaviour", "household", "firm"]},
+        {word: "Macroeconomics", def: "The study of the whole economy", keys: ["whole", "economy"]},
+        {word: "Market", def: "An arrangement which brings buyers into contact with sellers", keys: ["buyer", "seller", "contact"]},
+        {word: "Planned economic system", def: "An economic system where the government makes the crucial decisions", keys: ["government", "decision", "state"]},
+        {word: "Market economic system", def: "An economic system where consumers determine what is produced via the price mechanism", keys: ["consumer", "price mechanism", "private"]},
+        {word: "Mixed economic system", def: "An economy in which both the private and public sectors play an important role", keys: ["private", "public", "sector"]},
+        {word: "Price mechanism", def: "The way the decisions made by households and firms interact to decide resource allocation", keys: ["decision", "interact", "allocation"]},
+        {word: "Demand", def: "The willingness and ability to buy a product", keys: ["willingness", "ability", "buy"]},
+        {word: "Supply", def: "The willingness and ability to sell a product", keys: ["willingness", "ability", "sell"]},
+        {word: "Market equilibrium", def: "A situation where demand and supply are equal at the current price", keys: ["demand", "supply", "equal"]},
+        {word: "Normal goods", def: "A product whose demand increases when income increases", keys: ["demand", "increase", "income"]},
+        {word: "Inferior goods", def: "A product whose demand decreases when income increases", keys: ["demand", "decrease", "income"]},
+        {word: "Substitute", def: "A product that can be used in place of another", keys: ["place", "another", "instead"]},
+        {word: "Complement", def: "A product that is used together with another product", keys: ["together", "with", "another"]},
+        {word: "Unit cost", def: "The average cost of production (Total Cost / Output)", keys: ["average", "cost", "output"]},
+        {word: "Direct taxes", def: "Taxes on the income and wealth of individuals and firms", keys: ["tax", "income", "wealth"]},
+        {word: "Indirect taxes", def: "Taxes on goods and services", keys: ["tax", "good", "service"]},
+        {word: "Subsidy", def: "A payment by the government to encourage production or consumption", keys: ["payment", "government", "encourage"]},
+        {word: "PED", def: "A measure of the responsiveness of the quantity demanded to a change in price", keys: ["responsiveness", "quantity demanded", "price"]},
+        {word: "PES", def: "A measure of the responsiveness of the quantity supplied to a change in price", keys: ["responsiveness", "quantity supplied", "price"]},
+        {word: "Market failure", def: "Market forces resulting in an inefficient allocation of resources", keys: ["inefficient", "allocation", "resources"]},
+        {word: "Public good", def: "A non-rival and non-excludable product", keys: ["non-rival", "non-excludable"]},
+        {word: "Monopoly", def: "A single seller", keys: ["single", "seller", "one"]},
+        {word: "Money", def: "An item which is generally acceptable as a means of payment", keys: ["acceptable", "means", "payment"]},
+        {word: "Disposable income", def: "Income left after income tax has been deducted", keys: ["left", "after", "tax"]},
+        {word: "Wage rate", def: "A payment which an employer contracts to pay a worker", keys: ["payment", "employer", "worker"]},
+        {word: "Specialisation", def: "The concentration on particular products or tasks", keys: ["concentration", "product", "task"]},
+        {word: "Division of labour", def: "Workers specialising in particular tasks", keys: ["worker", "specialise", "task"]},
+        {word: "Trade union", def: "An association which represents the interests of a group of workers", keys: ["association", "represent", "worker"]},
+        {word: "Internal economies of scale", def: "Lower long-run average costs resulting from a firm growing", keys: ["lower", "cost", "growing"]},
+        {word: "Fixed costs", def: "Costs which do not change with output in the short run", keys: ["not", "change", "output"]},
+        {word: "Variable cost", def: "Costs that change with output", keys: ["change", "with", "output"]},
+        {word: "Total revenue", def: "The total amount of money received from selling a product", keys: ["total", "money", "selling"]},
+        {word: "Economic growth", def: "An increase in the output of an economy in the long run", keys: ["increase", "output", "long run"]},
+        {word: "GDP", def: "The total output of a country", keys: ["total", "output", "country"]},
+        {word: "Inflation", def: "The rise in the price level of goods and services over time", keys: ["rise", "price", "level"]},
+        {word: "Deflation", def: "A sustained fall in the prices of goods and services", keys: ["fall", "price", "sustained"]},
+        {word: "Recession", def: "A reduction in real GDP over a period of six months or more", keys: ["reduction", "gdp", "six months"]},
+        {word: "Unemployment rate", def: "Percentage of the labour force without jobs but willing to work", keys: ["percentage", "labour force", "without"]},
+        {word: "Globalisation", def: "The process by which the world is becoming increasingly interconnected", keys: ["world", "interconnected", "trade"]}
     ];
 
-    let streak = parseInt(localStorage.getItem('econ_streak')) || 0;
-    let xp = parseInt(localStorage.getItem('econ_xp')) || 0;
+    let xp = parseInt(localStorage.getItem('econ_xp_v3')) || 0;
+    let streak = parseInt(localStorage.getItem('econ_streak_v3')) || 0;
+    let mastered = JSON.parse(localStorage.getItem('mastered_v3')) || [];
     let currentIndex = 0;
-    let shuffledVocab = [];
 
     function init() {
-        shuffledVocab = [...vocabData].sort(() => Math.random() - 0.5);
-        document.getElementById('streak').innerText = streak;
-        document.getElementById('xp').innerText = xp;
-        updateUI();
+        const list = document.getElementById('word-list');
+        vocabData.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = `list-item ${mastered.includes(item.word) ? 'mastered' : ''}`;
+            div.id = `item-${index}`;
+            div.innerHTML = `<span>${item.word}</span> <span class="status">${mastered.includes(item.word) ? '✅' : ''}</span>`;
+            div.onclick = () => loadWord(index);
+            list.appendChild(div);
+        });
+
+        updateStats();
+        loadWord(0);
     }
 
-    function updateUI() {
-        if (currentIndex < shuffledVocab.length) {
-            document.getElementById('word-display').innerText = shuffledVocab[currentIndex].word;
-            document.getElementById('progress-text').innerText = `${currentIndex + 1} / ${shuffledVocab.length} Mastery`;
-            document.getElementById('progress-fill').style.width = `${(currentIndex / shuffledVocab.length) * 100}%`;
-            document.getElementById('user-input').value = '';
-            document.getElementById('quiz-ui').style.display = 'block';
-            document.getElementById('grading-zone').style.display = 'none';
-        } else {
-            document.getElementById('word-display').innerText = "Maxed Out! 🎉";
-            document.getElementById('quiz-ui').style.display = 'none';
-        }
-        updateRank();
+    function loadWord(index) {
+        currentIndex = index;
+        document.querySelectorAll('.list-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`item-${index}`).classList.add('active');
+        document.getElementById('word-display').innerText = vocabData[index].word;
+        document.getElementById('user-input').value = '';
+        document.getElementById('quiz-ui').style.display = 'block';
+        document.getElementById('grading-zone').style.display = 'none';
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('feedback-box').style.display = 'none';
     }
 
     function revealDef() {
-        const userText = document.getElementById('user-input').value;
-        document.getElementById('user-answer-display').innerText = userText || "(No entry)";
-        document.getElementById('definition-text').innerText = shuffledVocab[currentIndex].def;
+        const userIn = document.getElementById('user-input').value;
+        const userLower = userIn.toLowerCase();
+        const current = vocabData[currentIndex];
+        
+        document.getElementById('user-answer-display').innerText = userIn || "(No input)";
+        document.getElementById('definition-text').innerText = current.def;
+
+        // Smart Feedback Logic
+        let missing = [];
+        current.keys.forEach(k => {
+            if (!userLower.includes(k)) missing.push(k);
+        });
+
+        const fb = document.getElementById('feedback-box');
+        if (userIn.length < 3) {
+            fb.style.display = "none";
+        } else if (missing.length > 0) {
+            fb.innerHTML = `⚠️ <b>Correction Tip:</b> Try to include these key technical terms: <span style="color:#fbbf24">${missing.join(", ")}</span>`;
+            fb.style.display = "block";
+        } else {
+            fb.innerHTML = `✅ <b>Great terminology!</b> Your answer contains the core keywords required.`;
+            fb.style.display = "block";
+        }
+
         document.getElementById('quiz-ui').style.display = 'none';
         document.getElementById('grading-zone').style.display = 'block';
     }
 
-    function handleScore(isCorrect) {
-        if (isCorrect) {
+    function handleScore(correct) {
+        if (correct) {
             streak++;
-            xp += 10 + (streak * 2);
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            xp += 15;
+            confetti({ particleCount: 120, spread: 70, origin: { y: 0.7 }, colors: ['#00d2ff', '#9d50bb'] });
+            
+            if (!mastered.includes(vocabData[currentIndex].word)) {
+                mastered.push(vocabData[currentIndex].word);
+                const item = document.getElementById(`item-${currentIndex}`);
+                item.classList.add('mastered');
+                item.querySelector('.status').innerText = '✅';
+            }
         } else {
             streak = 0;
-            // Shake animation for incorrect
-            document.getElementById('main-card').style.transform = 'translateX(10px)';
-            setTimeout(() => document.getElementById('main-card').style.transform = 'translateX(0)', 100);
+            document.getElementById('main-card').animate([
+                { transform: 'translateX(0)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(0)' }
+            ], { duration: 200 });
         }
+
+        save();
+        updateStats();
         
-        localStorage.setItem('econ_streak', streak);
-        localStorage.setItem('econ_xp', xp);
-        
-        currentIndex++;
-        document.getElementById('streak').innerText = streak;
-        document.getElementById('xp').innerText = xp;
-        updateUI();
+        // Auto-advance
+        if (currentIndex < vocabData.length - 1) {
+            setTimeout(() => loadWord(currentIndex + 1), 600);
+        }
     }
 
-    function updateRank() {
-        let rank = "Novice Economist";
-        if (xp > 100) rank = "Market Analyst";
-        if (xp > 300) rank = "Policy Advisor";
-        if (xp > 600) rank = "Central Bank Governor";
-        if (xp > 1000) rank = "Global Economic Legend";
-        document.getElementById('rank').innerText = rank;
+    function updateStats() {
+        document.getElementById('xp').innerText = xp;
+        document.getElementById('streak').innerText = streak;
+        
+        let rank = "NOVICE ECONOMIST";
+        if (xp > 200) rank = "MARKET ANALYST";
+        if (xp > 500) rank = "POLICY ADVISOR";
+        if (xp > 1000) rank = "CENTRAL BANK GOVERNOR";
+        if (xp > 2000) rank = "GLOBAL ECONOMIC LEGEND";
+        document.getElementById('rank-display').innerText = rank;
+    }
+
+    function save() {
+        localStorage.setItem('econ_xp_v3', xp);
+        localStorage.setItem('econ_streak_v3', streak);
+        localStorage.setItem('mastered_v3', JSON.stringify(mastered));
     }
 
     window.onload = init;
 </script>
+
 </body>
 </html>
